@@ -4,8 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 /**
  * @author: create by zhl
@@ -56,6 +60,46 @@ public class ChannelTest {
         fos.close();
         fis.close();
 
+
+
+    }
+
+    /**
+     *
+     * @throws IOException
+     * 第二种读取不通过channel
+     * open() 参数：Paths.get() 文件位置
+     * StandardOpenOption
+     *
+     * open().map() 参数：MapMode(), position,size;
+     */
+    @Test
+    public void test02() throws IOException {
+        FileChannel open = FileChannel.open(Paths.get("E:\\NIO\\src\\1.jpg"), StandardOpenOption.READ);
+        FileChannel open1 = FileChannel.open(Paths.get("E:\\NIO\\src\\3.jpg"), StandardOpenOption.READ, StandardOpenOption.WRITE,StandardOpenOption.CREATE);//CREATE 文件不存在就创建 CREATE_NEW 文件不存在就创建，存在就报错
+        MappedByteBuffer map = open.map(FileChannel.MapMode.READ_ONLY, 0, open.size());
+        MappedByteBuffer map1 = open1.map(FileChannel.MapMode.READ_WRITE, 0, open.size());
+        byte[] det=new byte[map.limit()];
+        map.get(det);
+        map1.put(det);
+        open1.close();
+        open.close();
+
+
+    }
+    @Test
+    public void test03() throws IOException {
+        FileChannel open = FileChannel.open(Paths.get("E:\\NIO\\src\\1.jpg"), StandardOpenOption.READ);
+        FileChannel open2 = FileChannel.open(Paths.get("E:\\NIO\\src\\6.jpg"), StandardOpenOption.READ,StandardOpenOption.WRITE,StandardOpenOption.CREATE_NEW);
+
+        MappedByteBuffer map2 = open.map(FileChannel.MapMode.READ_ONLY, 0, open.size());
+        MappedByteBuffer map1 = open2.map(FileChannel.MapMode.READ_WRITE, 0, open.size());
+
+        byte[] bytes=new byte[map2.limit()];
+        map2.get(bytes);
+        map1.put(bytes);
+        open2.close();
+        open.close();
 
 
     }
