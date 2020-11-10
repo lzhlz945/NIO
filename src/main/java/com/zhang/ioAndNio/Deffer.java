@@ -114,5 +114,15 @@ public class Deffer {
 
  }
 
+    /**
+     * 直接缓冲区：allocateDirect();
+     * 减去了copy：不易控制，资源消耗大
+     */
+    @Test
+    public void test03(){
+        ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
+        System.out.println(buffer.isDirect());
+
+    }
 
 }
