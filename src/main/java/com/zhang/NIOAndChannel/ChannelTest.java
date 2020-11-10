@@ -1,5 +1,12 @@
 package com.zhang.NIOAndChannel;
 
+import org.junit.jupiter.api.Test;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+
 /**
  * @author: create by zhl
  * @version: v1.0
@@ -27,4 +34,29 @@ public class ChannelTest {
      *
      *3、在JDK 1.7 nio2 中的Files 工具类的newByteChannel();
      */
+    @Test
+    public void test01() throws Exception{
+        FileInputStream fis=new FileInputStream("E:\\NIO\\src\\1.jpg");
+        FileOutputStream fos=new FileOutputStream("E:\\NIO\\src\\2.jpg");
+        //获取channel
+        FileChannel fisChannel = fis.getChannel();
+        FileChannel fosChannel = fos.getChannel();
+
+        //创建缓冲区
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+        while (fisChannel.read(buffer) != -1){
+            //把nio转换成读
+            buffer.flip();
+            fosChannel.write(buffer);
+            buffer.clear();
+        }
+        fosChannel.close();
+        fisChannel.close();
+        fos.close();
+        fis.close();
+
+
+
+    }
 }
