@@ -59,8 +59,25 @@ public class ChannelTest {
         fisChannel.close();
         fos.close();
         fis.close();
+    }
 
+    @Test
+    public void test04() throws Exception{
+        FileInputStream fis=new FileInputStream("E:\\NIO\\src\\2.jpg");
+        FileOutputStream fos=new FileOutputStream("E:\\NIO\\src\\4.jpg");
 
+        FileChannel fisChannel = fis.getChannel();
+        FileChannel fosChannel = fos.getChannel();
+        ByteBuffer buffer=ByteBuffer.allocate(1024);
+        while (fisChannel.read(buffer)!= -1){
+            buffer.flip();
+            fosChannel.write(buffer);
+            buffer.clear();
+        }
+        fosChannel.close();
+        fisChannel.close();
+        fos.close();
+        fis.close();
 
     }
 
@@ -101,6 +118,21 @@ public class ChannelTest {
         open2.close();
         open.close();
 
+
+    }
+
+    /**
+     * 第三种
+     */
+
+    @Test
+    public void test05() throws  IOException{
+
+        FileChannel open = FileChannel.open(Paths.get("E:\\NIO\\src\\1.jpg"), StandardOpenOption.READ);
+        FileChannel open1 = FileChannel.open(Paths.get("E:\\NIO\\src\\5.jpg"), StandardOpenOption.READ,StandardOpenOption.WRITE,StandardOpenOption.CREATE);
+        open.transferTo(0,open.size(),open1);
+        open1.close();
+        open.close();
 
     }
 }
