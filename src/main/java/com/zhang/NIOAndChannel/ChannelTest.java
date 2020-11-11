@@ -122,7 +122,7 @@ public class ChannelTest {
     }
 
     /**
-     * 第三种
+     * 第三种 transferTo transferForm
      */
 
     @Test
@@ -133,6 +133,18 @@ public class ChannelTest {
         open.transferTo(0,open.size(),open1);
         open1.close();
         open.close();
+
+    }
+
+    @Test
+    public void test06() throws  IOException{
+        FileChannel in = FileChannel.open(Paths.get("E:\\NIO\\src\\1.jpg"), StandardOpenOption.READ);
+        FileChannel out=FileChannel.open(Paths.get("E:\\NIO\\src\\11.jpg"),StandardOpenOption.WRITE,StandardOpenOption.CREATE);
+
+        out.transferFrom(in,0,in.size());
+
+        out.close();
+        in.close();
 
     }
 }
