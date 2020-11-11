@@ -132,4 +132,107 @@ public class InetTest {
         accept.close();
         serverSocketChannel.close();
     }
+
+
+    /**
+     * 发送并接受消息
+     *
+     */
+    @Test
+    public void client() throws IOException {
+        SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 9090));
+
+        FileChannel fileChannel = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
+
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+        while (fileChannel.read(buffer)!= -1){
+            buffer.flip();
+            socketChannel.write(buffer);
+            buffer.clear();
+        }
+
+        socketChannel.shutdownOutput();
+
+        int len= 0;
+
+        while ((len=socketChannel.read(buffer))!= -1){
+            buffer.flip();
+            System.out.println(new String(buffer.array(),0,len));
+            buffer.clear();
+        }
+        fileChannel.close();
+        socketChannel.close();
+
+
+    }
+
+    @Test
+    public void server() throws IOException {
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+
+        FileChannel fileChannel = FileChannel.open(Paths.get("323.jpg"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+
+        serverSocketChannel.bind(new InetSocketAddress(9090));
+
+        SocketChannel accept = serverSocketChannel.accept();
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        while (accept.read(buffer) != -1){
+            buffer.flip();
+            fileChannel.write(buffer);
+            buffer.flip();
+        }
+        buffer.put("我已经接收到了图片！".getBytes());
+
+        buffer.flip();
+        accept.write(buffer);
+
+        fileChannel.close();
+        accept.close();
+        serverSocketChannel.close();
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
